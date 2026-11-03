@@ -1,0 +1,20 @@
+{
+  "name": "multisite-growth",
+  "interface": {
+    "displayName": "Multisite Growth"
+  },
+  "plugins": [
+    {
+      "name": "website-growth",
+      "source": {
+        "source": "local",
+        "path": "."
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

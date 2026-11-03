@@ -1,0 +1,32 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "website-growth",
+  "version": "0.2.0",
+  "description": "Manage a local multi-website SEO and GEO growth portfolio with Treg data and an issue ledger.",
+  "author": {
+    "name": "Ismael"
+  },
+  "keywords": [
+    "seo",
+    "geo",
+    "growth",
+    "treg"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Website Growth",
+        "shortDescription": "Your websites, evidence, and next growth actions",
+        "developerName": "Ismael",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "defaultPrompt": [
+          "Review my website portfolio and recommend the next growth actions."
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+node_modules/
+local-config.json
+verification.json
+*.db
+*.db-*
+*.log
+.write.lock
+.env
+.env.*
+!\.env.example
+portfolio-data/
+data/
+cache.json
+evidence.json
+migration.json
+__pycache__/
+.DS_Store
