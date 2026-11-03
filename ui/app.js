@@ -7,7 +7,7 @@ const date = value => value ? new Date(value).toLocaleString(undefined,{dateStyl
 function el(tag, className, text) {const node=document.createElement(tag);if(className)node.className=className;if(text!==undefined)node.textContent=text;return node;}
 function button(label,fn,className='text-button') {const b=el('button',className,label);b.type='button';b.addEventListener('click',()=>busy(b,fn));return b;}
 function notice(message,error=false){const n=$('#notice');n.hidden=!message;n.textContent=message;n.classList.toggle('error',error);}
-async function api(path,body){const response=await fetch(path,body===undefined?{}:{method:'POST',headers:{'content-type':'application/json','x-website-growth':'dashboard'},body:JSON.stringify(body)});const data=await response.json();if(!response.ok)throw new Error(data.error||'Request failed');return data;}
+async function api(path,body){if(globalThis.websiteGrowthApi)return globalThis.websiteGrowthApi(path,body);const response=await fetch(path,body===undefined?{}:{method:'POST',headers:{'content-type':'application/json','x-website-growth':'dashboard'},body:JSON.stringify(body)});const data=await response.json();if(!response.ok)throw new Error(data.error||'Request failed');return data;}
 async function busy(b,fn){const original=b.textContent;b.disabled=true;b.textContent='Working…';try{await fn();}catch(error){notice(error.message,true);}finally{b.disabled=false;b.textContent=original;}}
 async function load(){state=await api('/api/portfolio');render();}
 function render(){

@@ -14,7 +14,16 @@ test('MCP handshake, portfolio, local updates, schema rejection and evidence rou
   try {
     await client.connect(transport);
     const tools = await client.listTools();
-    assert.equal(tools.tools.length,12);
+    assert.equal(tools.tools.length,13);
+    const appTool = tools.tools.find(tool => tool.name === 'portfolio_app');
+    assert.equal(appTool.title,'Website Growth');
+    assert.deepEqual(appTool._meta['openai/ui'].entrypoints,[{type:'global'},{type:'thread'}]);
+    const resource = await client.readResource({uri:appTool._meta.ui.resourceUri});
+    assert.equal(resource.contents[0].mimeType,'text/html;profile=mcp-app');
+    assert.match(resource.contents[0].text,/Website Growth/);
+    assert.ok(!resource.contents[0].text.includes('src="/app.js"'));
+    const opened = await client.callTool({name:'portfolio_app',arguments:{}});
+    assert.equal(opened.structuredContent.overview.sites.length,0);
     const call = async (name,args={}) => {
       const response = await client.callTool({name,arguments:args});
       assert.ok(!response.isError,response.content[0].text);

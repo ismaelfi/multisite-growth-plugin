@@ -1,6 +1,6 @@
 # Multisite Growth Plugin
 
-A local-first website growth workspace for Codex. Review your portfolio in chat or in a visual dashboard inside the Codex browser panel. Track homepage SEO/GEO readiness, Search Console performance, research evidence and verified issues across multiple websites.
+A local-first website growth workspace for Codex. Open Website Growth from the native app sidebar on hosts supporting OpenAI MCP entrypoints, or use the browser dashboard and chat tools. Track homepage SEO/GEO readiness, Search Console performance, research evidence and verified issues across multiple websites.
 
 **MIT licensed. No hosted backend required. Your portfolio stays on your machine.**
 
@@ -30,7 +30,19 @@ Install dependencies in the clone before adding the plugin; plugin installation 
 
 Try: “Open my website growth dashboard”, “Review my website portfolio”, or “Use Treg to research AI visibility for this website and save the evidence.” New installations start with an empty portfolio; add websites in the dashboard or through chat.
 
-## Dashboard
+## Native sidebar app
+
+The plugin advertises a **Website Growth** global sidebar entry and a conversation-panel entry using the documented [OpenAI MCP UI entrypoints](https://developers.openai.com/plugins/build/extensions). The `portfolio_app` tool serves a bundled `text/html;profile=mcp-app` resource. Its UI calls the portfolio tools over MCP; it does not start or fetch a localhost web server.
+
+Reload your desktop app after installing/upgrading so it can rediscover plugin entrypoints. Availability depends on the host and its support for local MCP app entrypoints. For this marketplace install, the documented desktop deep link is:
+
+```text
+codex://plugins/website-growth@multisite-growth/app/portfolio_app
+```
+
+Existing personal installations may use a different marketplace name in that link. Headless hosts can continue using the same tools without the app UI. The browser dashboard below remains available.
+
+## Browser dashboard
 
 Ask Codex to call `portfolio_dashboard` and open the returned loopback URL in its browser panel. This is a local web UI in the app browser, not a native sidebar extension. The MCP-started dashboard runs while its MCP process remains active.
 
@@ -50,7 +62,7 @@ Treg is optional for public-page checks. For Search Console, install/sign in to 
 
 Paid keyword, backlink and AI-visibility research uses the separately connected Treg catalog tools or CLI, guided by the bundled skill. No paid catalog research runs on dashboard load or a technical refresh. Missing Search Console access remains missing data, not zero traffic.
 
-The 12 MCP tools cover overview, dashboard, cached report, refresh, site edits, GSC details, issue list/details/actions, evidence list/record and Treg connection status. Use `node scripts/cli.mjs overview` for the CLI fallback.
+The 13 MCP tools cover overview, native app, browser dashboard, cached report, refresh, site edits, GSC details, issue list/details/actions, evidence list/record and Treg connection status. Use `node scripts/cli.mjs overview` for the CLI fallback.
 
 ## Import DSH Portfolio
 
@@ -78,9 +90,10 @@ Then point `WEBSITE_GROWTH_DATA_DIR` to the destination. The importer refuses an
 ```sh
 npm ci
 npm test
+npm run build:ui
 npm run dashboard
 ```
 
-Tests cover HTML/robots/JSON-LD parsing, GSC periods, issue transitions, verification, SQLite migration, MCP protocol/tool flows and dashboard access boundaries. CI runs the test suite on Node 22 and 24. The UI uses packaged HTML/CSS/JavaScript with no external assets or build step.
+Tests cover HTML/robots/JSON-LD parsing, GSC periods, issue transitions, verification, SQLite migration, MCP protocol/tool flows and dashboard access boundaries. CI runs the test suite on Node 22 and 24. The browser UI uses packaged HTML/CSS/JavaScript with no external assets or build step. The native MCP app reuses that UI with an MCP transport adapter; its committed HTML bundle is rebuilt with `npm run build:ui` (also run before tests).
 
 Do not commit `local-config.json`, data directories, databases, report snapshots, evidence or credentials. The release exporter copies an explicit application-code allowlist. See [PROVENANCE.md](PROVENANCE.md) and [LICENSE](LICENSE).

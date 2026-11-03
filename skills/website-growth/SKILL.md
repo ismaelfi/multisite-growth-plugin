@@ -9,7 +9,9 @@ Use the plugin's portfolio tools to read the curated sites and their cached evid
 
 ## Visual dashboard
 
-When the user asks to open or see the portfolio UI, call `portfolio_dashboard`, then open the returned loopback URL with the Codex `open_in_codex` browser target when available. This is a local web dashboard inside the app browser panel, not a custom native sidebar. If the tool is not loaded, run `npm run dashboard` from the plugin folder and open the printed URL. Dashboard buttons update the same local ledger; no paid research runs on page load.
+For native UI on supported hosts, use `portfolio_app`, which declares global and conversation entrypoints. It renders the portfolio through the MCP Apps bridge, without starting a web server. Do not claim the sidebar is visibly present unless you can observe it. Hosts may need plugin rediscovery after upgrades.
+
+For the browser fallback, call `portfolio_dashboard`, then open the returned loopback URL with the Codex `open_in_codex` browser target when available. This is a local web dashboard inside the app browser panel, not a custom native sidebar. If the tool is not loaded, run `npm run dashboard` from the plugin folder and open the printed URL. Dashboard buttons update the same local ledger; no paid research runs on page load.
 
 ## Portfolio review
 
