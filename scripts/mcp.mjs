@@ -6,7 +6,7 @@ import * as portfolio from '../lib/portfolio.js';
 import { startDashboard } from '../lib/dashboard.js';
 import { registerNativeUi } from '../lib/native-ui.js';
 
-const server = new McpServer({ name: 'website-growth', version: '0.3.2' });
+const server = new McpServer({ name: 'website-growth', version: '0.3.3' });
 registerNativeUi(server);
 const siteId = z.string().min(1).max(64);
 let dashboard;

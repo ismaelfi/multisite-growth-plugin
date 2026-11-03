@@ -2,7 +2,7 @@ import { App, applyDocumentTheme, applyHostStyleVariables } from '@modelcontextp
 import { createNativeApi } from './native-api.js';
 
 async function main() {
-  const app = new App({name:'Website Growth',version:'0.3.2'});
+  const app = new App({name:'Website Growth',version:'0.3.3'});
   let snapshot;
   let booting = true;
   app.ontoolresult = result => { if (booting) snapshot = result.structuredContent; };

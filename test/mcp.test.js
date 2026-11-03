@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, cpSync, mkdirSync, writeFileSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -43,4 +43,30 @@ test('MCP handshake, portfolio, local updates, schema rejection and evidence rou
     const invalid = await client.callTool({name:'evidence_record',arguments:{siteId:added.site.id,source:'test',measurementType:'sampled',summary:'x',collectedAt:'not-a-date',costUsd:-1}});
     assert.equal(invalid.isError,true);
   } finally {await client.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('an open native app survives removal of its installed UI and private settings during an upgrade',async()=>{
+  const dir=mkdtempSync(join(tmpdir(),'growth-upgrade-'));
+  const plugin=join(dir,'plugin'),data=join(dir,'data');
+  mkdirSync(plugin);mkdirSync(data);
+  const root=fileURLToPath(new URL('../',import.meta.url));
+  for(const name of ['lib','scripts','ui'])cpSync(join(root,name),join(plugin,name),{recursive:true});
+  symlinkSync(join(root,'node_modules'),join(plugin,'node_modules'),'dir');
+  writeFileSync(join(plugin,'package.json'),'{"type":"module"}');
+  writeFileSync(join(plugin,'local-config.json'),JSON.stringify({dataDir:data}));
+  writeFileSync(join(data,'config.json'),JSON.stringify({version:1,days:28,sites:[{id:'example-com',name:'Example',domain:'example.com'}]}));
+  const env={...process.env};delete env.WEBSITE_GROWTH_DATA_DIR;
+  const client=new Client({name:'upgrade-test',version:'1'});
+  const transport=new StdioClientTransport({command:process.execPath,args:[join(plugin,'scripts/mcp.mjs')],env,stderr:'pipe'});
+  try{
+    await client.connect(transport);
+    rmSync(join(plugin,'ui'),{recursive:true});
+    rmSync(join(plugin,'local-config.json'));
+    const resource=await client.readResource({uri:'ui://website-growth/portfolio'});
+    assert.equal(resource.contents[0].mimeType,'text/html;profile=mcp-app');
+    assert.ok(resource.contents[0].text.length>100000);
+    const app=await client.callTool({name:'portfolio_app',arguments:{}});
+    assert.equal(app.structuredContent.overview.dataDir,data);
+    assert.equal(app.structuredContent.overview.sites[0].domain,'example.com');
+  }finally{await client.close();rmSync(dir,{recursive:true,force:true});}
 });
