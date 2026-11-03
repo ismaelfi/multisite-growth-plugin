@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "website-growth",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Manage a local multi-website SEO and GEO growth portfolio with Treg data and an issue ledger.",
   "author": {
     "name": "Ismael"
